@@ -1,3 +1,14 @@
-_security_logout:
-    resource: security.route_loader.logout
-    type: service
+sport:
+    resource: '../../src/Controller/SportController.php'
+    type: annotation
+    prefix: /api
+
+event:
+    resource: '../../src/Controller/EventController.php'
+    type: annotation
+    prefix: /api
+
+participant:
+    resource: '../../src/Controller/ParticipantController.php'      ## L'erreur est ici depuis tout ce temps
+    type: annotation                                                ## Le chemin était mauvais 
+    prefix: /api

@@ -3,3 +3,8 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+
+admin_sport:
+    resource: '../src/Controller/Admin/SportAdminController.php'
+    type: annotation
+    prefix: /admin/sport

@@ -1,24 +1,38 @@
-# This file is the entry point to configure your own services.
-# Files in the packages/ subdirectory configure your dependencies.
-
-# Put parameters here that don't need to change on each machine where the app is deployed
-# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
-parameters:
-
 services:
-    # default configuration for services in *this* file
     _defaults:
-        autowire: true      # Automatically injects dependencies in your services.
-        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        autowire: true
+        autoconfigure: true
 
-    # makes classes in src/ available to be used as services
-    # this creates a service per class whose id is the fully-qualified class name
+    # This allows using the "@" symbol to reference services, and automatically handles autowiring
     App\:
-        resource: '../src/'
-        exclude:
-            - '../src/DependencyInjection/'
-            - '../src/Entity/'
-            - '../src/Kernel.php'
+        resource: '../src/*'
+        exclude: '../src/{DependencyInjection,Entity,Tests,Kernel.php}'
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+    App\Controller\:
+        resource: '../src/Controller'
+        tags: ['controller.service_arguments']
+
+    # Register annotation reader
+    annotation_reader:
+        class: Doctrine\Common\Annotations\AnnotationReader
+
+    # Sensio Framework Extra Bundle Annotations Configuration
+    sensio_framework_extra.controller.listener:
+        class: Sensio\Bundle\FrameworkExtraBundle\EventListener\ControllerListener
+        arguments: ['@annotation_reader']
+
+    sensio_framework_extra.cache.listener:
+        class: Sensio\Bundle\FrameworkExtraBundle\EventListener\HttpCacheListener
+        arguments: ['@annotation_reader']
+
+    sensio_framework_extra.converter.listener:
+        class: Sensio\Bundle\FrameworkExtraBundle\EventListener\ParamConverterListener
+        arguments: ['@annotation_reader', '@sensio_framework_extra.converter.manager']
+
+    sensio_framework_extra.security.listener:
+        class: Sensio\Bundle\FrameworkExtraBundle\EventListener\SecurityListener
+        arguments: ['@annotation_reader']
+
+    sensio_framework_extra.view.listener:
+        class: Sensio\Bundle\FrameworkExtraBundle\EventListener\TemplateListener
+        arguments: ['@annotation_reader']
